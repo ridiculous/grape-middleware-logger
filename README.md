@@ -1,6 +1,6 @@
 # Grape::Middleware::Logger
 
-Dead until brought to life with the release of Grape v0.12.0
+Works if you're running directly off Grape master. Otherwise, you'll have to wait for the release of Grape v0.12.0
 
 ## Installation
 
