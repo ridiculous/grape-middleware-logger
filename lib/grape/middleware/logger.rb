@@ -9,9 +9,17 @@ module Grape
       # Overrides
       #
 
+      def before
+        @start_time = Time.now
+        super
+        logger.info ''
+        logger.info %Q(Started #{env['grape.request'].request_method} "#{env['grape.request'].path}")
+        logger.info %Q(  Parameters: #{parameters})
+      end
+
       def call!(env)
         @env = env
-        _before
+        before
         error = catch(:error) { @app_response = @app.call(@env); nil }
         if error
           after_failure(error)
@@ -30,14 +38,6 @@ module Grape
       #
       # Helpers
       #
-
-      # @todo rename to +before+ when Grape v0.12.0 is released
-      def _before
-        @start_time = Time.now
-        logger.info ''
-        logger.info %Q(Started #{env['grape.request'].request_method} "#{env['grape.request'].path}")
-        logger.info %Q(  Parameters: #{parameters})
-      end
 
       def after_failure(error)
         logger.info %Q(  Error: #{error[:message]}) if error[:message]
