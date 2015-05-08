@@ -1,16 +1,14 @@
 require 'logger'
 require 'grape/middleware/globals'
 
+# avoid superclass mismatch when version file gets loaded first
+Grape::Middleware.send :remove_const, :Logger if defined? Grape::Middleware::Logger
 module Grape
   module Middleware
     class Logger < Grape::Middleware::Globals
 
-      #
-      # Overrides
-      #
-
       def before
-        @start_time = Time.now
+        start_time
         super
         logger.info ''
         logger.info %Q(Started #{env['grape.request'].request_method} "#{env['grape.request'].path}")
@@ -31,7 +29,7 @@ module Grape
       end
 
       def after(status)
-        logger.info "Completed #{status} in #{((Time.now - @start_time) * 1000).round(2)}ms"
+        logger.info "Completed #{status} in #{((Time.now - start_time) * 1000).round(2)}ms"
         logger.info ''
       end
 
@@ -52,6 +50,10 @@ module Grape
         else
           request_params
         end
+      end
+
+      def start_time
+        @start_time ||= Time.now
       end
 
       def logger
