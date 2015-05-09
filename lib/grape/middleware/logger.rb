@@ -19,11 +19,11 @@ module Grape
         @env = env
         before
         error = catch(:error) { @app_response = @app.call(@env); nil }
-        if error
+        if error.nil?
+          after(@app_response.first)
+        else
           after_failure(error)
           throw(:error, error)
-        else
-          after(@app_response.first)
         end
         @app_response
       end
