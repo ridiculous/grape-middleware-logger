@@ -9,8 +9,8 @@ Gem::Specification.new do |spec|
   spec.platform      = Gem::Platform::RUBY
   spec.authors       = ['Ryan Buckley']
   spec.email         = ['arebuckley@gmail.com']
-  spec.summary       = %q{Logging middleware for Grape apps}
-  spec.description   = %q{Logging middleware for Grape apps, similar to what Rails offers}
+  spec.summary       = %q{A logger for the Grape framework}
+  spec.description   = %q{Logging middleware for the Grape framework, similar to what Rails offers}
   spec.homepage      = ''
   spec.license       = 'MIT'
 
