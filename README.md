@@ -1,4 +1,5 @@
 # Grape::Middleware::Logger
+[![Code Climate](https://codeclimate.com/github/ridiculous/grape-middleware-logger/badges/gpa.svg)](https://codeclimate.com/github/ridiculous/grape-middleware-logger)
 
 Works if you're running directly off Grape master. Otherwise, you'll have to wait for the release of Grape v0.12.0
 
