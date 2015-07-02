@@ -18,7 +18,7 @@ class API < Grape::API
   use Grape::Middleware::Logger
 end
 ```    
-Using Grape with Rails? Add consistent logging and parameter sanitization:
+Using Grape with Rails or want to customize the logging? You can provide a `logger` option, which just has to respond to `.info(msg)`. Example Rails logging and parameter sanitization:
 ```ruby
 use Grape::Middleware::Logger, { 
   logger: Rails.logger, 
