@@ -21,17 +21,18 @@ Or install it yourself as:
     $ gem install grape-middleware-logger
 
 ## Usage
-    
-    class API < Grape::API
-      use Grape::Middleware::Logger
-    end
-    
+```ruby
+class API < Grape::API
+  use Grape::Middleware::Logger
+end
+```    
 Using Grape with Rails? Add consistent logging and param filtering with
-
-    use Grape::Middleware::Logger, { 
-      logger: Rails.logger, 
-      filter: ActionDispatch::Http::ParameterFilter.new(Rails.application.config.filter_parameters)
-    }
+```ruby
+use Grape::Middleware::Logger, { 
+  logger: Rails.logger, 
+  filter: ActionDispatch::Http::ParameterFilter.new(Rails.application.config.filter_parameters)
+}
+```
     
 ## Credits
 
