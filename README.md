@@ -18,7 +18,7 @@ class API < Grape::API
   use Grape::Middleware::Logger
 end
 ```    
-Using Grape with Rails? Add consistent logging and param filtering with
+Using Grape with Rails? Add consistent logging and parameter sanitization:
 ```ruby
 use Grape::Middleware::Logger, { 
   logger: Rails.logger, 
@@ -26,7 +26,7 @@ use Grape::Middleware::Logger, {
 }
 ```
 
-The `filter` option can be any object that responds to `.filter(param_hash)`
+The `filter` option can be any object that responds to `.filter(params_hash)`
   
 ## Credits
 
