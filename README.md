@@ -1,7 +1,7 @@
 # Grape::Middleware::Logger
 [![Code Climate](https://codeclimate.com/github/ridiculous/grape-middleware-logger/badges/gpa.svg)](https://codeclimate.com/github/ridiculous/grape-middleware-logger) [![Gem Version](https://badge.fury.io/rb/grape-middleware-logger.svg)](http://badge.fury.io/rb/grape-middleware-logger)
 
-If you wanna use this gem, you'll need to be running Grape master [#dd0cae27](https://github.com/intridea/grape/commit/dd0cae274ee0017a22deef5e282b75cf25d65385) (April 30) or later. Otherwise, you'll have to wait for the release of v0.12.0
+If you wanna use this gem, you'll need to be running Grape master [#dd0cae27](https://github.com/intridea/grape/commit/dd0cae274ee0017a22deef5e282b75cf25d65385) (April 30) or later. Otherwise, you'll have to wait for the release of 0.12.0
 
 ## Installation
 
@@ -11,14 +11,6 @@ Add this line to your application's Gemfile:
 gem 'grape', github: 'intridea/grape', branch: 'master', ref: 'dd0cae274ee0017a22deef5e282b75cf25d65385'
 gem 'grape-middleware-logger'
 ```
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install grape-middleware-logger
 
 ## Usage
 ```ruby
