@@ -25,7 +25,9 @@ use Grape::Middleware::Logger, {
   filter: ActionDispatch::Http::ParameterFilter.new(Rails.application.config.filter_parameters)
 }
 ```
-    
+
+The `filter` option can be any object that responds to `.filter(param_hash)`
+  
 ## Credits
 
 Big thanks to jadent's question/answer on [stackoverflow](http://stackoverflow.com/questions/25048163/grape-using-error-and-grapemiddleware-after-callback)
