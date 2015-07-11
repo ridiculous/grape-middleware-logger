@@ -7,21 +7,19 @@ describe Grape::Middleware::Logger do
 
   subject { described_class.new(app, options) }
 
-  let(:app_response) { [200, {}, 'Hello World'] }
+  let(:app_response) { Rack::Response.new 'Hello World', 200, {} }
+  let(:grape_request) { OpenStruct.new(request_method: 'POST', path: '/api/1.0/users', headers: {}, params: { 'id' => '101001' }) }
   let(:env) {
     {
-      'grape.request' => OpenStruct.new(request_method: 'POST', path: '/api/1.0/users'),
-      'grape.request.params' => {
-        'id' => '101001'
-      },
+      'grape.request' => grape_request,
+      'grape.request.params' => grape_request.params,
       'action_dispatch.request.request_parameters' => {
         'name' => 'foo',
         'password' => 'access'
-      }
+      },
+      'rack.input' => OpenStruct.new
     }
   }
-  # @todo remove when Grape v0.12.0 is released
-  before(:each) { allow(subject).to receive(:before) }
 
   describe '#call!' do
     context 'when calling the app results in an error response' do
@@ -49,18 +47,6 @@ describe Grape::Middleware::Logger do
         allow(subject).to receive(:before)
         allow(subject).to receive(:after)
         expect(subject.call!(env)).to eq app_response
-      end
-    end
-
-    describe 'integration' do
-      it 'properly logs requests', pending: 'Grape v0.12.0' do
-        expect(app).to receive(:call).with(env).and_return(app_response)
-        expect(subject.logger).to receive(:info).with('')
-        expect(subject.logger).to receive(:info).with(%Q(Started POST "/api/1.0/users"))
-        expect(subject.logger).to receive(:info).with(%Q(  Parameters: {"id"=>"101001", "name"=>"foo", "password"=>"[FILTERED]"}))
-        expect(subject.logger).to receive(:info).with(/Completed 200 in \d.\d+ms/)
-        expect(subject.logger).to receive(:info).with('')
-        subject.call!(env)
       end
     end
   end
@@ -120,6 +106,19 @@ describe Grape::Middleware::Logger do
       it 'returns the logger object' do
         expect(subject.logger).to eq options[:logger]
       end
+    end
+  end
+
+  describe 'integration' do
+    it 'properly logs requests' do
+      expect(app).to receive(:call).with(env).and_return(app_response)
+      expect(Grape::Request).to receive(:new).and_return(grape_request)
+      expect(subject.logger).to receive(:info).with('')
+      expect(subject.logger).to receive(:info).with(%Q(Started POST "/api/1.0/users"))
+      expect(subject.logger).to receive(:info).with(%Q(  Parameters: {"id"=>"101001", "name"=>"foo", "password"=>"[FILTERED]"}))
+      expect(subject.logger).to receive(:info).with(/Completed 200 in \d.\d+ms/)
+      expect(subject.logger).to receive(:info).with('')
+      subject.call!(env)
     end
   end
 
