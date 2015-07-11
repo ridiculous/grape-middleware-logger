@@ -1,7 +1,7 @@
 # Grape::Middleware::Logger
 [![Code Climate](https://codeclimate.com/github/ridiculous/grape-middleware-logger/badges/gpa.svg)](https://codeclimate.com/github/ridiculous/grape-middleware-logger) [![Gem Version](https://badge.fury.io/rb/grape-middleware-logger.svg)](http://badge.fury.io/rb/grape-middleware-logger)
 
-If you wanna use this gem, you'll need to be running Grape master [#dd0cae27](https://github.com/intridea/grape/commit/dd0cae274ee0017a22deef5e282b75cf25d65385) (April 30) or later. Otherwise, you'll have to wait for the release of 0.12.0
+Simple logger for Grape apps. Logs request path, parameters, status and time taken. Also logs exceptions and error responses (thrown by `error!`). Requires Grape >= 0.12.0
 
 ## Installation
 
@@ -27,7 +27,22 @@ use Grape::Middleware::Logger, {
 ```
 
 The `filter` option can be any object that responds to `.filter(params_hash)`
-  
+
+## Example output
+Get
+```
+Started GET "/v1/reports/101"
+  Parameters: {"id"=>"101"}
+Completed 200 in 6.29ms
+```
+Error
+```
+Started GET "/v1/reports/101"
+  Parameters: {"id"=>"101"}
+  Error: {:error=>"undefined something something bad", :detail=>"Whoops"}
+Completed 422 in 6.29ms
+```
+
 ## Credits
 
 Big thanks to jadent's question/answer on [stackoverflow](http://stackoverflow.com/questions/25048163/grape-using-error-and-grapemiddleware-after-callback)
