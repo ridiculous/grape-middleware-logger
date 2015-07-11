@@ -1,14 +1,14 @@
 # Grape::Middleware::Logger
 [![Code Climate](https://codeclimate.com/github/ridiculous/grape-middleware-logger/badges/gpa.svg)](https://codeclimate.com/github/ridiculous/grape-middleware-logger) [![Gem Version](https://badge.fury.io/rb/grape-middleware-logger.svg)](http://badge.fury.io/rb/grape-middleware-logger)
 
-Simple logger for Grape apps. Logs request path, parameters, status and time taken. Also logs exceptions and error responses (thrown by `error!`). Requires Grape >= 0.12.0
+Simple logger for Grape apps. Logs request path, parameters, status and time taken. Also logs exceptions and error responses (thrown by `error!`).
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'grape', github: 'intridea/grape', branch: 'master', ref: 'dd0cae274ee0017a22deef5e282b75cf25d65385'
+gem 'grape', '>= 0.12.0'
 gem 'grape-middleware-logger'
 ```
 
