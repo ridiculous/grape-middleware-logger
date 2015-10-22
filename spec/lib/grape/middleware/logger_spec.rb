@@ -1,6 +1,12 @@
 require 'spec_helper'
 require 'grape/middleware/logger'
 
+class Rails
+  def self.logger
+    nil
+  end
+end
+
 describe Grape::Middleware::Logger do
   let(:app) { double('app') }
   let(:options) { { filter: ParamFilter.new, logger: Object.new } }
@@ -99,6 +105,13 @@ describe Grape::Middleware::Logger do
 
       it 'defaults to the the standard Logger' do
         expect(subject.logger).to be_a(Logger)
+      end
+
+      it 'defaults to Rails.logger if is set' do
+        rails_logger = double("rails_logger")
+        allow(Rails).to receive(:logger).and_return(rails_logger)
+
+        expect(subject.logger).to eq(rails_logger)
       end
     end
 

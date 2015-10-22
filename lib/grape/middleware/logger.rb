@@ -70,7 +70,8 @@ class Grape::Middleware::Logger < Grape::Middleware::Globals
   end
 
   def logger
-    @logger ||= @options[:logger] || Logger.new(STDOUT)
+    @logger ||= @options[:logger]
+    @logger ||= defined?(Rails) && Rails.logger.present? ? Rails.logger : Logger.new(STDOUT)
   end
 end
 
