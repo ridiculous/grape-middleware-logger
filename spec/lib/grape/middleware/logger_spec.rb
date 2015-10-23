@@ -1,12 +1,6 @@
 require 'spec_helper'
 require 'grape/middleware/logger'
 
-class Rails
-  def self.logger
-    nil
-  end
-end
-
 describe Grape::Middleware::Logger do
   let(:app) { double('app') }
   let(:options) { { filter: ParamFilter.new, logger: Object.new } }
@@ -103,15 +97,24 @@ describe Grape::Middleware::Logger do
     context 'when @options[:logger] is nil' do
       let(:options) { {} }
 
-      it 'defaults to the the standard Logger' do
-        expect(subject.logger).to be_a(Logger)
-      end
+      context 'when Rails is defined' do
+        module Rails
+          class << self
+            attr_accessor :logger
+          end
+        end
 
-      it 'defaults to Rails.logger if is set' do
-        rails_logger = double("rails_logger")
-        allow(Rails).to receive(:logger).and_return(rails_logger)
+        it 'defaults to the the standard Logger' do
+          expect(subject.logger).to be_a(Logger)
+        end
 
-        expect(subject.logger).to eq(rails_logger)
+        context 'when Rails.logger is defined' do
+          before { Rails.logger = double('rails_logger') }
+
+          it 'sets @logger to Rails.logger' do
+            expect(subject.logger).to be Rails.logger
+          end
+        end
       end
     end
 
