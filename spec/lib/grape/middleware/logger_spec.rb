@@ -138,8 +138,7 @@ describe Grape::Middleware::Logger do
   #
   # Test class
   #
-
-  ParamFilter = Class.new do
+  class ParamFilter
     def filter(opts)
       opts.each_pair { |key, val| val[0..-1] = '[FILTERED]' if key == 'password' }
     end
