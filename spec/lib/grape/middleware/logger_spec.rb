@@ -97,8 +97,24 @@ describe Grape::Middleware::Logger do
     context 'when @options[:logger] is nil' do
       let(:options) { {} }
 
-      it 'defaults to the the standard Logger' do
-        expect(subject.logger).to be_a(Logger)
+      context 'when Rails is defined' do
+        module Rails
+          class << self
+            attr_accessor :logger
+          end
+        end
+
+        it 'defaults to the the standard Logger' do
+          expect(subject.logger).to be_a(Logger)
+        end
+
+        context 'when Rails.logger is defined' do
+          before { Rails.logger = double('rails_logger') }
+
+          it 'sets @logger to Rails.logger' do
+            expect(subject.logger).to be Rails.logger
+          end
+        end
       end
     end
 
@@ -125,8 +141,7 @@ describe Grape::Middleware::Logger do
   #
   # Test class
   #
-
-  ParamFilter = Class.new do
+  class ParamFilter
     def filter(opts)
       opts.each_pair { |key, val| val[0..-1] = '[FILTERED]' if key == 'password' }
     end

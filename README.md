@@ -17,14 +17,22 @@ gem 'grape-middleware-logger'
 class API < Grape::API
   use Grape::Middleware::Logger
 end
-```    
-Using Grape with Rails or want to customize the logging? You can provide a `logger` option, which just has to respond to `.info(msg)`. Example Rails logging and parameter sanitization:
+```
+
+#### Rails
+Using Grape with Rails? `Rails.logger` will be used by default.
+
+#### Custom setup
+Want to customize the logging? You can provide a `logger` option.
+
+Example using a CustomLogger and parameter sanitization:
 ```ruby
-use Grape::Middleware::Logger, { 
-  logger: Rails.logger, 
+use Grape::Middleware::Logger, {
+  logger: CustomLogger.new,
   filter: ActionDispatch::Http::ParameterFilter.new(Rails.application.config.filter_parameters)
 }
 ```
+The `logger` option can be any object that responds to `.info(msg)`
 
 The `filter` option can be any object that responds to `.filter(params_hash)`
 
