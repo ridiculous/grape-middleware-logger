@@ -21,6 +21,11 @@ class Grape::Middleware::Logger < Grape::Middleware::Globals
     error = catch(:error) do
       begin
         @app_response = @app.call(@env)
+        # Usually a rack response object is returned: https://github.com/ruby-grape/grape/blob/master/UPGRADING.md#changes-in-middleware
+        # However, rack/auth/abstract/handler.rb still returns an array instead of a rack response object.
+        if @app_response.is_a?(Array)
+          @app_response = Rack::Response.new(@app_response[2], @app_response[0], @app_response[1])
+        end
       rescue => e
         after_exception(e)
         raise e
