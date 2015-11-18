@@ -50,7 +50,7 @@ describe Grape::Middleware::Logger do
       end
     end
 
-    context 'when response is an array' do
+    context 'when calling the app results in an array response' do
       let(:app_response_array) { Rack::Response.new [401, 'Auth Failed'], 401, {} }
 
       it 'calls +after+ with the correct status' do
