@@ -36,7 +36,7 @@ class Grape::Middleware::Logger < Grape::Middleware::Globals
       if @app_response.is_a?(Array)
         after(@app_response[0])
       else
-        after(@app_response.status)          
+        after(@app_response.status)
       end
     end
     @app_response

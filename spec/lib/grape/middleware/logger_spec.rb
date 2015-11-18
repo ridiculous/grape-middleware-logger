@@ -49,6 +49,24 @@ describe Grape::Middleware::Logger do
         expect(subject.call!(env)).to eq app_response
       end
     end
+
+    context 'when response is an array' do
+      let(:app_response_array) { Rack::Response.new [401, 'Auth Failed'], 401, {} }
+
+      it 'calls +after+ with the correct status' do
+        expect(app).to receive(:call).with(env).and_return(app_response_array)
+        expect(subject).to receive(:before)
+        expect(subject).to receive(:after).with(401)
+        subject.call!(env)
+      end
+
+      it 'returns the @app_response_array' do
+        expect(app).to receive(:call).with(env).and_return(app_response_array)
+        allow(subject).to receive(:before)
+        allow(subject).to receive(:after)
+        expect(subject.call!(env)).to eq app_response_array
+      end
+    end
   end
 
   describe '#after_failure' do
