@@ -1,8 +1,6 @@
 require 'logger'
 require 'grape'
 
-# avoid superclass mismatch when version file gets loaded first
-Grape::Middleware.send :remove_const, :Logger if defined? Grape::Middleware::Logger
 class Grape::Middleware::Logger < Grape::Middleware::Globals
   def before
     start_time
@@ -80,5 +78,3 @@ class Grape::Middleware::Logger < Grape::Middleware::Globals
     @logger ||= defined?(Rails) && Rails.logger.present? ? Rails.logger : Logger.new(STDOUT)
   end
 end
-
-require 'grape/middleware/logger/version'

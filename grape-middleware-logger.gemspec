@@ -1,11 +1,8 @@
 # coding: utf-8
-lib = File.expand_path('../lib', __FILE__)
-$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'grape/middleware/logger/version'
 
 Gem::Specification.new do |spec|
   spec.name          = 'grape-middleware-logger'
-  spec.version       = Grape::Middleware::Logger::VERSION
+  spec.version       = '1.1.1'
   spec.platform      = Gem::Platform::RUBY
   spec.authors       = ['Ryan Buckley']
   spec.email         = ['arebuckley@gmail.com']
