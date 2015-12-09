@@ -1,5 +1,6 @@
 # Grape::Middleware::Logger
 [![Code Climate](https://codeclimate.com/github/ridiculous/grape-middleware-logger/badges/gpa.svg)](https://codeclimate.com/github/ridiculous/grape-middleware-logger) [![Gem Version](https://badge.fury.io/rb/grape-middleware-logger.svg)](http://badge.fury.io/rb/grape-middleware-logger)
+[![Build Status](https://travis-ci.org/ridiculous/grape-middleware-logger.svg)](https://travis-ci.org/ridiculous/grape-middleware-logger)
 
 Simple logger for Grape apps. Logs request path, parameters, status and time taken. Also logs exceptions and error responses (thrown by `error!`).
 
