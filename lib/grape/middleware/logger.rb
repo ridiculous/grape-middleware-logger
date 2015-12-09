@@ -2,6 +2,15 @@ require 'logger'
 require 'grape'
 
 class Grape::Middleware::Logger < Grape::Middleware::Globals
+  attr_reader :logger
+
+  def initialize(_, options = {})
+    super
+    @logger = options[:logger]
+    @logger ||= Rails.logger if defined?(Rails) && Rails.logger.present?
+    @logger ||= Logger.new(STDOUT)
+  end
+
   def before
     start_time
     super # sets env['grape.*']
@@ -71,10 +80,5 @@ class Grape::Middleware::Logger < Grape::Middleware::Globals
 
   def start_time
     @start_time ||= Time.now
-  end
-
-  def logger
-    @logger ||= @options[:logger]
-    @logger ||= defined?(Rails) && Rails.logger.present? ? Rails.logger : Logger.new(STDOUT)
   end
 end

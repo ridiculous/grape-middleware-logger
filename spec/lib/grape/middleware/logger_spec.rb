@@ -116,9 +116,11 @@ describe Grape::Middleware::Logger do
       let(:options) { {} }
 
       context 'when Rails is defined' do
-        module Rails
-          class << self
-            attr_accessor :logger
+        before do
+          module Rails
+            class << self
+              attr_accessor :logger
+            end
           end
         end
 
@@ -127,11 +129,21 @@ describe Grape::Middleware::Logger do
         end
 
         context 'when Rails.logger is defined' do
-          before { Rails.logger = double('rails_logger') }
+          before do
+            Rails.logger = double('rails_logger')
+          end
 
           it 'sets @logger to Rails.logger' do
             expect(subject.logger).to be Rails.logger
           end
+
+          after do
+            Rails.logger = nil
+          end
+        end
+
+        after do
+          Object.send :remove_const, :Rails
         end
       end
     end
