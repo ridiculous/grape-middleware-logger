@@ -20,13 +20,13 @@ class API < Grape::API
 end
 ```
 
+Server requests will be logged to STDOUT by default.
+
 #### Rails
-Using Grape with Rails? `Rails.logger` will be used by default.
+Using Grape with Rails? The `Rails.logger` will be used by default.
 
 #### Custom setup
-Want to customize the logging? You can provide a `logger` option.
-
-Example using a CustomLogger and parameter sanitization:
+Customize the logging by passing the `logger` option. Example using a CustomLogger and parameter sanitization:
 ```ruby
 use Grape::Middleware::Logger, {
   logger: CustomLogger.new,
