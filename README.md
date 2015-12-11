@@ -40,14 +40,14 @@ The `filter` option can be any object that responds to `.filter(params_hash)`
 ## Example output
 Get
 ```
-Started GET "/v1/reports/101"
+Started GET "/v1/reports/101" at 2015-12-11 15:40:51 -0800
   Parameters: {"id"=>"101"}
 Completed 200 in 6.29ms
 ```
 Error
 ```
-Started GET "/v1/reports/101"
-  Parameters: {"id"=>"101"}
+Started POST "/v1/reports" at 2015-12-11 15:42:33 -0800
+  Parameters: {"name"=>"foo", "password"=>"[FILTERED]"}
   Error: {:error=>"undefined something something bad", :detail=>"Whoops"}
 Completed 422 in 6.29ms
 ```

@@ -160,7 +160,7 @@ describe Grape::Middleware::Logger do
       expect(app).to receive(:call).with(env).and_return(app_response)
       expect(Grape::Request).to receive(:new).and_return(grape_request)
       expect(subject.logger).to receive(:info).with('')
-      expect(subject.logger).to receive(:info).with(%Q(Started POST "/api/1.0/users"))
+      expect(subject.logger).to receive(:info).with(%Q(Started POST "/api/1.0/users" at #{subject.start_time}))
       expect(subject.logger).to receive(:info).with(%Q(  Parameters: {"id"=>"101001", "name"=>"foo", "password"=>"[FILTERED]"}))
       expect(subject.logger).to receive(:info).with(/Completed 200 in \d.\d+ms/)
       expect(subject.logger).to receive(:info).with('')

@@ -15,7 +15,11 @@ class Grape::Middleware::Logger < Grape::Middleware::Globals
     start_time
     super # sets env['grape.*']
     logger.info ''
-    logger.info %Q(Started #{env['grape.request'].request_method} "#{env['grape.request'].path}")
+    logger.info %Q(Started %s "%s" at %s) % [
+      env['grape.request'].request_method,
+      env['grape.request'].path,
+      start_time.to_default_s
+    ]
     logger.info %Q(  Parameters: #{parameters})
   end
 
