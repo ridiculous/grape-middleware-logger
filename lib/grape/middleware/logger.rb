@@ -3,7 +3,6 @@ require 'grape'
 
 class Grape::Middleware::Logger < Grape::Middleware::Globals
   BACKSLASH = '/'.freeze
-  BLANK_SPACE = ''.freeze
 
   attr_reader :logger
 
@@ -18,7 +17,7 @@ class Grape::Middleware::Logger < Grape::Middleware::Globals
     start_time
     # sets env['grape.*']
     super
-    logger.info BLANK_SPACE
+    logger.info ''
     logger.info %Q(Started %s "%s" at %s) % [
       env[Grape::Env::GRAPE_REQUEST].request_method,
       env[Grape::Env::GRAPE_REQUEST].path,
@@ -60,7 +59,7 @@ class Grape::Middleware::Logger < Grape::Middleware::Globals
 
   def after(status)
     logger.info "Completed #{status} in #{((Time.now - start_time) * 1000).round(2)}ms"
-    logger.info BLANK_SPACE
+    logger.info ''
   end
 
   #
@@ -95,7 +94,7 @@ class Grape::Middleware::Logger < Grape::Middleware::Globals
     endpoint = env[Grape::Env::API_ENDPOINT]
     parts = endpoint.options[:for].to_s
     parts << endpoint.namespace if endpoint.namespace != BACKSLASH
-    parts << '#'.freeze << endpoint.options[:path].map { |path| path.to_s.sub(BACKSLASH, BLANK_SPACE) }.join(BACKSLASH)
+    parts << '#'.freeze << endpoint.options[:path].map { |path| path.to_s.sub(BACKSLASH, '') }.join(BACKSLASH)
   end
 
   def default_logger
