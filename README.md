@@ -9,7 +9,7 @@ Simple logger for Grape apps. Logs request path, parameters, status and time tak
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'grape', '>= 0.12.0'
+gem 'grape', '>= 0.14.0'
 gem 'grape-middleware-logger'
 ```
 
