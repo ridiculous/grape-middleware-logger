@@ -128,6 +128,10 @@ describe Grape::Middleware::Logger do
           expect(subject.logger).to be_a(Logger)
         end
 
+        it 'logs each message in the correct format' do
+          expect(subject.logger.formatter.call('foo')).to eq "foo\n"
+        end
+
         context 'when Rails.logger is defined' do
           before do
             Rails.logger = double('rails_logger')

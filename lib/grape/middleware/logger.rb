@@ -8,7 +8,7 @@ class Grape::Middleware::Logger < Grape::Middleware::Globals
     super
     @logger = options[:logger]
     @logger ||= Rails.logger if defined?(Rails) && Rails.logger.present?
-    @logger ||= Logger.new(STDOUT)
+    @logger ||= default_logger
   end
 
   def before
@@ -84,5 +84,17 @@ class Grape::Middleware::Logger < Grape::Middleware::Globals
 
   def start_time
     @start_time ||= Time.now
+  end
+
+  def default_logger
+    default = Logger.new(STDOUT)
+    default.formatter = LogFormatter.new
+    default
+  end
+
+  class LogFormatter
+    def call(*args)
+      args.last.to_s << "\n"
+    end
   end
 end
