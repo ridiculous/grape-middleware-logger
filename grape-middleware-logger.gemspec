@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.email         = ['arebuckley@gmail.com']
   spec.summary       = %q{A logger for the Grape framework}
   spec.description   = %q{Logging middleware for the Grape framework, similar to what Rails offers}
-  spec.homepage      = ''
+  spec.homepage      = 'https://github.com/ridiculous/grape-middleware-logger'
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files -z`.split("\x0")
