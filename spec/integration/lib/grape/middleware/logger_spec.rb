@@ -28,15 +28,15 @@ describe Grape::Middleware::Logger, type: :integration do
     context 'namespacing' do
       let(:grape_endpoint) { build(:namespaced_endpoint) }
 
-      it 'designates the namespace with a slash' do
-        expect(subject.processed_by).to eq 'TestAPI/admin#users'
+      it 'ignores the namespacing' do
+        expect(subject.processed_by).to eq 'TestAPI#users'
       end
 
       context 'with more complex route' do
         let(:grape_endpoint) { build(:namespaced_endpoint, :complex) }
 
         it 'only escapes the first slash and leaves the rest of the untouched' do
-          expect(subject.processed_by).to eq 'TestAPI/admin#users/:name/profile'
+          expect(subject.processed_by).to eq 'TestAPI#users/:name/profile'
         end
       end
     end
