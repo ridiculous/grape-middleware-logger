@@ -13,7 +13,8 @@ class Grape::Middleware::Logger < Grape::Middleware::Globals
 
   def before
     start_time
-    super # sets env['grape.*']
+    # sets env['grape.*']
+    super
     logger.info ''
     logger.info %Q(Started %s "%s" at %s) % [
       env[Grape::Env::GRAPE_REQUEST].request_method,
@@ -92,7 +93,6 @@ class Grape::Middleware::Logger < Grape::Middleware::Globals
     parts = endpoint.options[:for].to_s
     parts << endpoint.namespace if endpoint.namespace != '/'
     parts << '#' << endpoint.options[:path].map { |path| path.to_s.sub('/', '') }.join('/')
-    parts
   end
 
   def default_logger
