@@ -16,10 +16,11 @@ class Grape::Middleware::Logger < Grape::Middleware::Globals
     super # sets env['grape.*']
     logger.info ''
     logger.info %Q(Started %s "%s" at %s) % [
-      env['grape.request'].request_method,
-      env['grape.request'].path,
+      env[Grape::Env::GRAPE_REQUEST].request_method,
+      env[Grape::Env::GRAPE_REQUEST].path,
       start_time.to_s
     ]
+    logger.info %Q(Processing by #{processed_by})
     logger.info %Q(  Parameters: #{parameters})
   end
 
@@ -73,7 +74,7 @@ class Grape::Middleware::Logger < Grape::Middleware::Globals
   end
 
   def parameters
-    request_params = env['grape.request.params'].to_hash
+    request_params = env[Grape::Env::GRAPE_REQUEST_PARAMS].to_hash
     request_params.merge!(env['action_dispatch.request.request_parameters'] || {}) # for Rails
     if @options[:filter]
       @options[:filter].filter(request_params)
@@ -84,6 +85,14 @@ class Grape::Middleware::Logger < Grape::Middleware::Globals
 
   def start_time
     @start_time ||= Time.now
+  end
+
+  def processed_by
+    endpoint = env[Grape::Env::API_ENDPOINT]
+    parts = endpoint.options[:for].to_s
+    parts << endpoint.namespace if endpoint.namespace != '/'
+    parts << '#' << endpoint.options[:path].map { |path| path.to_s.sub('/', '') }.join('/')
+    parts
   end
 
   def default_logger

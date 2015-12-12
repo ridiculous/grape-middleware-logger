@@ -16,6 +16,7 @@ gem 'grape-middleware-logger'
 ## Usage
 ```ruby
 class API < Grape::API
+  # @note Make sure this above you're first +mount+
   use Grape::Middleware::Logger
 end
 ```

@@ -1,25 +1,14 @@
 require 'spec_helper'
-require 'grape/middleware/logger'
 
 describe Grape::Middleware::Logger do
   let(:app) { double('app') }
-  let(:options) { { filter: ParamFilter.new, logger: Object.new } }
+  let(:options) { { filter: build(:param_filter), logger: Object.new } }
 
   subject { described_class.new(app, options) }
 
-  let(:app_response) { Rack::Response.new 'Hello World', 200, {} }
-  let(:grape_request) { OpenStruct.new(request_method: 'POST', path: '/api/1.0/users', headers: {}, params: { 'id' => '101001' }) }
-  let(:env) {
-    {
-      'grape.request' => grape_request,
-      'grape.request.params' => grape_request.params,
-      'action_dispatch.request.request_parameters' => {
-        'name' => 'foo',
-        'password' => 'access'
-      },
-      'rack.input' => OpenStruct.new
-    }
-  }
+  let(:app_response) { build :app_response }
+  let(:grape_request) { build :grape_request }
+  let(:env) { build(:expected_env) }
 
   describe '#call!' do
     context 'when calling the app results in an error response' do
@@ -156,28 +145,6 @@ describe Grape::Middleware::Logger do
       it 'returns the logger object' do
         expect(subject.logger).to eq options[:logger]
       end
-    end
-  end
-
-  describe 'integration' do
-    it 'properly logs requests' do
-      expect(app).to receive(:call).with(env).and_return(app_response)
-      expect(Grape::Request).to receive(:new).and_return(grape_request)
-      expect(subject.logger).to receive(:info).with('')
-      expect(subject.logger).to receive(:info).with(%Q(Started POST "/api/1.0/users" at #{subject.start_time}))
-      expect(subject.logger).to receive(:info).with(%Q(  Parameters: {"id"=>"101001", "name"=>"foo", "password"=>"[FILTERED]"}))
-      expect(subject.logger).to receive(:info).with(/Completed 200 in \d.\d+ms/)
-      expect(subject.logger).to receive(:info).with('')
-      subject.call!(env)
-    end
-  end
-
-  #
-  # Test class
-  #
-  class ParamFilter
-    def filter(opts)
-      opts.each_pair { |key, val| val[0..-1] = '[FILTERED]' if key == 'password' }
     end
   end
 end

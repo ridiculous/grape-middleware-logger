@@ -5,4 +5,5 @@ gemspec
 
 group :test do
   gem 'rake'
+  gem "factory_girl", "~> 4.0"
 end
