@@ -6,11 +6,20 @@ class Grape::Middleware::Logger < Grape::Middleware::Globals
 
   attr_reader :logger
 
+  class << self
+    attr_accessor :logger, :filter
+
+    def default_logger
+      default = Logger.new(STDOUT)
+      default.formatter = ->(*args) { args.last.to_s << "\n".freeze }
+      default
+    end
+  end
+
   def initialize(_, options = {})
     super
-    @logger = options[:logger]
-    @logger ||= Rails.logger if defined?(Rails) && Rails.logger.present?
-    @logger ||= default_logger
+    @options[:filter] ||= self.class.filter
+    @logger = options[:logger] || self.class.logger || self.class.default_logger
   end
 
   def before
@@ -94,10 +103,6 @@ class Grape::Middleware::Logger < Grape::Middleware::Globals
     endpoint = env[Grape::Env::API_ENDPOINT]
     endpoint.options[:for].to_s << '#'.freeze << endpoint.options[:path].map { |path| path.to_s.sub(BACKSLASH, '') }.join(BACKSLASH)
   end
-
-  def default_logger
-    default = Logger.new(STDOUT)
-    default.formatter = ->(*args) { args.last.to_s << "\n".freeze }
-    default
-  end
 end
+
+require_relative 'logger/railtie' if defined?(Rails)

@@ -1,8 +1,8 @@
-require 'spec_helper'
+require 'rails_helper'
 
-describe Grape::Middleware::Logger, type: :integration do
+describe Grape::Middleware::Logger, type: :rails_integration do
   let(:app) { build :app }
-  let(:options) { { filter: build(:param_filter), logger: Logger.new(Tempfile.new('logger')) } }
+  let(:options) { {} }
 
   subject { described_class.new(app, options) }
 
@@ -10,6 +10,37 @@ describe Grape::Middleware::Logger, type: :integration do
   let(:grape_request) { build :grape_request }
   let(:grape_endpoint) { build(:grape_endpoint) }
   let(:env) { build(:expected_env, grape_endpoint: grape_endpoint) }
+
+  describe '#logger' do
+    context 'when @options[:logger] is nil' do
+      context 'when Rails.application.config.logger is defined' do
+        it 'uses the Rails logger' do
+          expect(subject.logger).to be_present
+          expect(subject.logger).to be Rails.application.config.logger
+          expect(subject.logger.formatter).to be_nil
+        end
+      end
+
+      context 'when the class logger is nil' do
+        before { described_class.logger = nil }
+
+        it 'uses the default logger' do
+          expect(subject.logger).to be_present
+          expect(subject.logger).to_not be Rails.application.config.logger
+          expect(subject.logger).to be_a(Logger)
+          expect(subject.logger.formatter.call('foo')).to eq "foo\n"
+        end
+      end
+    end
+
+    context 'when @options[:logger] is set' do
+      let(:options) { { logger: Object.new } }
+
+      it 'returns the logger object' do
+        expect(subject.logger).to eq options[:logger]
+      end
+    end
+  end
 
   it 'logs all parts of the request' do
     expect(subject.logger).to receive(:info).with ''
@@ -48,5 +79,4 @@ describe Grape::Middleware::Logger, type: :integration do
       end
     end
   end
-
 end
