@@ -23,7 +23,36 @@ end
 
 Server requests will be logged to STDOUT by default.
 
-#### Rails
+## Custom setup
+Customize the logging by passing the `logger` option. Example using a CustomLogger and parameter sanitization:
+```ruby
+use Grape::Middleware::Logger, {
+  logger: CustomLogger.new,
+  filter: CustomFilter.new
+}
+```
+The `logger` option can be any object that responds to `.info(msg)`
+
+The `filter` option can be any object that responds to `.filter(params_hash)`
+
+## Example output
+Get
+```
+Started GET "/v1/reports/101" at 2015-12-11 15:40:51 -0800
+Processing by ReportsAPI#reports/:id
+  Parameters: {"id"=>"101"}
+Completed 200 in 6.29ms
+```
+Error
+```
+Started POST "/v1/reports" at 2015-12-11 15:42:33 -0800
+Processing by ReportsAPI#reports
+  Parameters: {"name"=>"foo", "password"=>"[FILTERED]"}
+  Error: {:error=>"undefined something something bad", :detail=>"Whoops"}
+Completed 422 in 6.29ms
+```
+
+## Using Rails?
 `Rails.logger` and `Rails.application.config.filter_parameters` will be used automatically as the default logger and 
 param filterer, respectively.
 
@@ -49,35 +78,6 @@ class SelectiveLogger
     end
   end
 end
-```
-
-#### Custom setup
-Customize the logging by passing the `logger` option. Example using a CustomLogger and parameter sanitization:
-```ruby
-use Grape::Middleware::Logger, {
-  logger: CustomLogger.new,
-  filter: ActionDispatch::Http::ParameterFilter.new(Rails.application.config.filter_parameters)
-}
-```
-The `logger` option can be any object that responds to `.info(msg)`
-
-The `filter` option can be any object that responds to `.filter(params_hash)`
-
-## Example output
-Get
-```
-Started GET "/v1/reports/101" at 2015-12-11 15:40:51 -0800
-Processing by ReportsAPI#reports/:id
-  Parameters: {"id"=>"101"}
-Completed 200 in 6.29ms
-```
-Error
-```
-Started POST "/v1/reports" at 2015-12-11 15:42:33 -0800
-Processing by ReportsAPI#reports
-  Parameters: {"name"=>"foo", "password"=>"[FILTERED]"}
-  Error: {:error=>"undefined something something bad", :detail=>"Whoops"}
-Completed 422 in 6.29ms
 ```
 
 ## Rack
