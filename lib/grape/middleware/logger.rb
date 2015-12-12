@@ -97,13 +97,7 @@ class Grape::Middleware::Logger < Grape::Middleware::Globals
 
   def default_logger
     default = Logger.new(STDOUT)
-    default.formatter = LogFormatter.new
+    default.formatter = ->(*args) { args.last.to_s << "\n" }
     default
-  end
-
-  class LogFormatter
-    def call(*args)
-      args.last.to_s << "\n"
-    end
   end
 end
