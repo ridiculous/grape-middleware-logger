@@ -2,6 +2,9 @@ require 'logger'
 require 'grape'
 
 class Grape::Middleware::Logger < Grape::Middleware::Globals
+  BACKSLASH = '/'.freeze
+  BLANK_SPACE = ''.freeze
+
   attr_reader :logger
 
   def initialize(_, options = {})
@@ -15,7 +18,7 @@ class Grape::Middleware::Logger < Grape::Middleware::Globals
     start_time
     # sets env['grape.*']
     super
-    logger.info ''.freeze
+    logger.info BLANK_SPACE
     logger.info %Q(Started %s "%s" at %s) % [
       env[Grape::Env::GRAPE_REQUEST].request_method,
       env[Grape::Env::GRAPE_REQUEST].path,
@@ -57,7 +60,7 @@ class Grape::Middleware::Logger < Grape::Middleware::Globals
 
   def after(status)
     logger.info "Completed #{status} in #{((Time.now - start_time) * 1000).round(2)}ms"
-    logger.info ''.freeze
+    logger.info BLANK_SPACE
   end
 
   #
@@ -91,13 +94,13 @@ class Grape::Middleware::Logger < Grape::Middleware::Globals
   def processed_by
     endpoint = env[Grape::Env::API_ENDPOINT]
     parts = endpoint.options[:for].to_s
-    parts << endpoint.namespace if endpoint.namespace != '/'.freeze
-    parts << '#'.freeze << endpoint.options[:path].map { |path| path.to_s.sub('/', '') }.join('/')
+    parts << endpoint.namespace if endpoint.namespace != BACKSLASH
+    parts << '#'.freeze << endpoint.options[:path].map { |path| path.to_s.sub(BACKSLASH, BLANK_SPACE) }.join(BACKSLASH)
   end
 
   def default_logger
     default = Logger.new(STDOUT)
-    default.formatter = ->(*args) { args.last.to_s << "\n" }
+    default.formatter = ->(*args) { args.last.to_s << "\n".freeze }
     default
   end
 end
