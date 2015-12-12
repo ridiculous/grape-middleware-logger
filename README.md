@@ -24,8 +24,32 @@ end
 Server requests will be logged to STDOUT by default.
 
 #### Rails
-Using Grape with Rails? The Rails logger defined as `config.logger` will be used by default. The parameter filtering you 
-defined as `config.filter_parameters` will also be used by default.
+`Rails.logger` and `Rails.application.config.filter_parameters` will be used automatically as the default logger and 
+param filterer, respectively.
+
+You may want to disable Rails logging for API endpoints, so that the logging doesn't double-up. You can achieve this 
+by switching around some middleware. For example:
+
+```ruby
+# config/application.rb
+config.middleware.delete 'Rails::Rack::Logger'
+config.middleware.insert_after 'ActionDispatch::RequestId', 'SelectiveLogger'
+
+# config/initializers/selective_logger.rb
+class SelectiveLogger
+  def initialize(app)
+    @app = app
+  end
+
+  def call(env)
+    if env['PATH_INFO'] =~ %r{^/api}
+      @app.call(env)
+    else
+      Rails::Rack::Logger.new(@app).call(env)
+    end
+  end
+end
+```
 
 #### Custom setup
 Customize the logging by passing the `logger` option. Example using a CustomLogger and parameter sanitization:
