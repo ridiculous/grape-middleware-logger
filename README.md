@@ -24,7 +24,8 @@ end
 Server requests will be logged to STDOUT by default.
 
 #### Rails
-Using Grape with Rails? The `Rails.logger` will be used by default.
+Using Grape with Rails? The Rails logger defined as `config.logger` will be used by default. The parameter filtering you 
+defined as `config.filter_parameters` will also be used by default.
 
 #### Custom setup
 Customize the logging by passing the `logger` option. Example using a CustomLogger and parameter sanitization:
