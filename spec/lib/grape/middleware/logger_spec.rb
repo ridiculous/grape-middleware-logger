@@ -40,20 +40,20 @@ describe Grape::Middleware::Logger do
     end
 
     context 'when calling the app results in an array response' do
-      let(:app_response_array) { [401, {}, []] }
+      let(:app_response) { [401, {}, []] }
 
       it 'calls +after+ with the correct status' do
-        expect(app).to receive(:call).with(env).and_return(app_response_array)
+        expect(app).to receive(:call).with(env).and_return(app_response)
         expect(subject).to receive(:before)
         expect(subject).to receive(:after).with(401)
         subject.call!(env)
       end
 
       it 'returns the @app_response' do
-        expect(app).to receive(:call).with(env).and_return(app_response_array)
+        expect(app).to receive(:call).with(env).and_return(app_response)
         allow(subject).to receive(:before)
         allow(subject).to receive(:after)
-        expect(subject.call!(env)).to eq app_response_array
+        expect(subject.call!(env)).to eq app_response
       end
     end
   end
