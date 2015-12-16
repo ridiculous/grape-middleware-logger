@@ -2,7 +2,14 @@
 [![Code Climate](https://codeclimate.com/github/ridiculous/grape-middleware-logger/badges/gpa.svg)](https://codeclimate.com/github/ridiculous/grape-middleware-logger) [![Gem Version](https://badge.fury.io/rb/grape-middleware-logger.svg)](http://badge.fury.io/rb/grape-middleware-logger)
 [![Build Status](https://travis-ci.org/ridiculous/grape-middleware-logger.svg)](https://travis-ci.org/ridiculous/grape-middleware-logger)
 
-Logs the request path, endpoint name, parameters, response status and duration. Exceptions and `error!` responses are logged as well.
+Logs:
+  * Request path
+  * Parameters
+  * Endpoint class name and handler
+  * Response status
+  * Duration of the request
+  * Exceptions
+  * Error responses from `error!`
 
 ## Installation
 
