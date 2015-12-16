@@ -1,3 +1,0 @@
-#!/bin/bash
-set -ev
-bundle exec rspec spec/lib && bundle exec rspec spec/integration && bundle exec rspec spec/integration_rails
