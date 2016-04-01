@@ -96,7 +96,14 @@ class Grape::Middleware::Logger < Grape::Middleware::Globals
 
   def processed_by
     endpoint = env[Grape::Env::API_ENDPOINT]
-    endpoint.options[:for].to_s << '#'.freeze << endpoint.options[:path].map { |path| path.to_s.sub(BACKSLASH, '') }.join(BACKSLASH)
+    result = []
+    if endpoint.namespace == BACKSLASH
+      result << ''
+    else
+      result << endpoint.namespace
+    end
+    result.concat endpoint.options[:path].map { |path| path.to_s.sub(BACKSLASH, '') }
+    endpoint.options[:for].to_s << result.join(BACKSLASH)
   end
 end
 
