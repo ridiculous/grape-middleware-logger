@@ -7,7 +7,7 @@ class Grape::Middleware::Logger < Grape::Middleware::Globals
   attr_reader :logger
 
   class << self
-    attr_accessor :logger, :filter
+    attr_accessor :logger, :filter, :on_parameters
 
     def default_logger
       default = Logger.new(STDOUT)
@@ -82,13 +82,9 @@ class Grape::Middleware::Logger < Grape::Middleware::Globals
 
   def parameters
     request_params = env[Grape::Env::GRAPE_REQUEST_PARAMS].to_hash
-    formatter = Grape::Middleware::Formatter.new(app)
-    formatter.instance_variable_set :@env, env
-    # @note parses and assigns params to @env[Grape::Env::RACK_REQUEST_FORM_HASH]
-    formatter.before
-    request_params.merge! env[Grape::Env::RACK_REQUEST_FORM_HASH] if env[Grape::Env::RACK_REQUEST_FORM_HASH]
     # @note Rails specific
     request_params.merge! env['action_dispatch.request.request_parameters'] if env['action_dispatch.request.request_parameters']
+    self.class.on_parameters.call(app, env, request_params) if self.class.on_parameters
     if @options[:filter]
       @options[:filter].filter(request_params)
     else
@@ -124,5 +120,12 @@ else
     Grape::Middleware::Formatter.send :define_method, :before do
       Grape::Middleware::FormatterOverride.instance_method(:before).bind(self).call
     end
+  end
+  Grape::Middleware::Logger.on_parameters = ->(app, env, params) do
+    formatter = Grape::Middleware::Formatter.new(app)
+    formatter.instance_variable_set :@env, env
+    # @note parses and assigns params to @env[Grape::Env::RACK_REQUEST_FORM_HASH]
+    formatter.before
+    params.merge! env[Grape::Env::RACK_REQUEST_FORM_HASH] if env[Grape::Env::RACK_REQUEST_FORM_HASH]
   end
 end
