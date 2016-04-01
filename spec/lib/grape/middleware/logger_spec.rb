@@ -8,7 +8,7 @@ describe Grape::Middleware::Logger do
 
   let(:app_response) { build :app_response }
   let(:grape_request) { build :grape_request }
-  let(:env) { build(:expected_env) }
+  let(:env) { build :expected_env }
 
   describe '#call!' do
     context 'when calling the app results in an error response' do
@@ -82,12 +82,12 @@ describe Grape::Middleware::Logger do
 
     context 'when @options[:filter] is set' do
       it 'calls +filter+ with the raw parameters' do
-        expect(subject.options[:filter]).to receive(:filter).with({ "id" => '101001', "name" => "foo", "password" => "access" })
+        expect(subject.options[:filter]).to receive(:filter).with({ "id" => '101001', "secret" => "key", "customer" => [] })
         subject.parameters
       end
 
       it 'returns the filtered results' do
-        expect(subject.parameters).to eq({ "id" => '101001', "name" => "foo", "password" => "[FILTERED]" })
+        expect(subject.parameters).to eq({ "id" => '101001', "secret" => "[FILTERED]", "customer" => [] })
       end
     end
 
@@ -95,7 +95,7 @@ describe Grape::Middleware::Logger do
       let(:options) { {} }
 
       it 'returns the params extracted out of @env' do
-        expect(subject.parameters).to eq({ "id" => '101001', "name" => "foo", "password" => "access" })
+        expect(subject.parameters).to eq({ "id" => '101001', "secret" => "key", "customer" => [] })
       end
     end
   end

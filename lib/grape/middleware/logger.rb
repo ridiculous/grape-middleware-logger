@@ -82,8 +82,6 @@ class Grape::Middleware::Logger < Grape::Middleware::Globals
 
   def parameters
     request_params = env[Grape::Env::GRAPE_REQUEST_PARAMS].to_hash
-    # @note Rails specific
-    request_params.merge! env['action_dispatch.request.request_parameters'] if env['action_dispatch.request.request_parameters']
     self.class.on_parameters.call(app, env, request_params) if self.class.on_parameters
     if @options[:filter]
       @options[:filter].filter(request_params)
