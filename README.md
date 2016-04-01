@@ -46,14 +46,14 @@ The `filter` option can be any object that responds to `.filter(params_hash)`
 Get
 ```
 Started GET "/v1/reports/101" at 2015-12-11 15:40:51 -0800
-Processing by ReportsAPI#reports/:id
+Processing by ReportsAPI/reports/:id
   Parameters: {"id"=>"101"}
 Completed 200 in 6.29ms
 ```
 Error
 ```
 Started POST "/v1/reports" at 2015-12-11 15:42:33 -0800
-Processing by ReportsAPI#reports
+Processing by ReportsAPI/reports
   Parameters: {"name"=>"foo", "password"=>"[FILTERED]"}
   Error: {:error=>"undefined something something bad", :detail=>"Whoops"}
 Completed 422 in 6.29ms
