@@ -30,17 +30,16 @@ end
 
 Server requests will be logged to STDOUT by default.
 
-## Custom setup
-Customize the logging by passing the `logger` option. Example using a CustomLogger and parameter sanitization:
+## Customization
+Example using a logger and parameter filter:
 ```ruby
 use Grape::Middleware::Logger, {
-  logger: CustomLogger.new,
+  logger: Logger.new('/tmp/app/log'),
   filter: CustomFilter.new
 }
 ```
-The `logger` option can be any object that responds to `.info(msg)`
-
-The `filter` option can be any object that responds to `.filter(params_hash)`
+The `:logger` option can be any object that responds to `.info(String)`
+The `:filter` option can be any object that responds to `.filter(Hash)` and returns a hash.
 
 ## Example output
 Get
