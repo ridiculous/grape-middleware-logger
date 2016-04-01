@@ -113,13 +113,9 @@ if defined?(Rails)
   require_relative 'logger/railtie'
 else
   # @description Override formatter #before so we don't read and parse the env['rack.input'] value twice
-  require_relative 'formatter_override'
-  if Grape::Middleware::Formatter.respond_to? :prepend
-    Grape::Middleware::Formatter.prepend Grape::Middleware::FormatterOverride
-  else
-    Grape::Middleware::Formatter.send :define_method, :before do
-      Grape::Middleware::FormatterOverride.instance_method(:before).bind(self).call
-    end
+  Grape::Middleware::Formatter.send :define_method, :before do
+    negotiate_content_type
+    read_body_input unless env.key? Grape::Env::RACK_REQUEST_FORM_HASH
   end
   Grape::Middleware::Logger.on_parameters = ->(app, env, params) do
     formatter = Grape::Middleware::Formatter.new(app)
