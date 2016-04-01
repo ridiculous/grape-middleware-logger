@@ -1,9 +1,9 @@
 language: ruby
 rvm:
   - 1.9.3
-  - 2.2.1
-  - 2.2.2
-  - 2.2.3
-before_install: gem install bundler -v 1.10.5
-before_deploy:
+  - 2.1.9
+  - 2.2.4
+  - 2.3.0
+before_install:
+  - gem install bundler -v 1.10.5
   - gem install mime-types -v 2.6.2
