@@ -30,17 +30,6 @@ end
 
 Server requests will be logged to STDOUT by default.
 
-## Customization
-Example using a logger and parameter filter:
-```ruby
-use Grape::Middleware::Logger, {
-  logger: Logger.new('/tmp/app/log'),
-  filter: CustomFilter.new
-}
-```
-The `:logger` option can be any object that responds to `.info(String)`
-The `:filter` option can be any object that responds to `.filter(Hash)` and returns a hash.
-
 ## Example output
 Get
 ```
@@ -57,6 +46,13 @@ Processing by ReportsAPI/reports
   Error: {:error=>"undefined something something bad", :detail=>"Whoops"}
 Completed 422 in 6.29ms
 ```
+
+## Customization
+
+The middleware logger can be customized with the following options:
+
+* The `:logger` option can be any object that responds to `.info(String)`
+* The `:filter` option can be any object that responds to `.filter(Hash)` and returns a hash.
 
 ## Using Rails?
 `Rails.logger` and `Rails.application.config.filter_parameters` will be used automatically as the default logger and 
