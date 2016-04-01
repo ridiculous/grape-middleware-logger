@@ -82,7 +82,13 @@ class Grape::Middleware::Logger < Grape::Middleware::Globals
 
   def parameters
     request_params = env[Grape::Env::GRAPE_REQUEST_PARAMS].to_hash
-    request_params.merge!(env['action_dispatch.request.request_parameters'.freeze] || {}) # for Rails
+    formatter = Grape::Middleware::Formatter.new(app)
+    formatter.instance_variable_set :@env, env
+    # @note parses and assigns params to @env[Grape::Env::RACK_REQUEST_FORM_HASH]
+    formatter.before
+    request_params.merge! env[Grape::Env::RACK_REQUEST_FORM_HASH] if env[Grape::Env::RACK_REQUEST_FORM_HASH]
+    # @note Rails specific
+    request_params.merge! env['action_dispatch.request.request_parameters'] if env['action_dispatch.request.request_parameters']
     if @options[:filter]
       @options[:filter].filter(request_params)
     else
@@ -107,4 +113,16 @@ class Grape::Middleware::Logger < Grape::Middleware::Globals
   end
 end
 
-require_relative 'logger/railtie' if defined?(Rails)
+if defined?(Rails)
+  require_relative 'logger/railtie'
+else
+  # @description Override formatter #before so we don't read and parse the env['rack.input'] value twice
+  require_relative 'formatter_override'
+  if Grape::Middleware::Formatter.respond_to? :prepend
+    Grape::Middleware::Formatter.prepend Grape::Middleware::FormatterOverride
+  else
+    Grape::Middleware::Formatter.send :define_method, :before do
+      Grape::Middleware::FormatterOverride.instance_method(:before).bind(self).call
+    end
+  end
+end

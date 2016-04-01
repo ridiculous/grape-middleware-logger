@@ -45,7 +45,7 @@ describe Grape::Middleware::Logger, type: :rails_integration do
   it 'logs all parts of the request' do
     expect(subject.logger).to receive(:info).with ''
     expect(subject.logger).to receive(:info).with %Q(Started POST "/api/1.0/users" at #{subject.start_time})
-    expect(subject.logger).to receive(:info).with %Q(Processing by TestAPI#users)
+    expect(subject.logger).to receive(:info).with %Q(Processing by TestAPI/users)
     expect(subject.logger).to receive(:info).with %Q(  Parameters: {"id"=>"101001", "name"=>"foo", "password"=>"[FILTERED]"})
     expect(subject.logger).to receive(:info).with /Completed 200 in \d+.\d+ms/
     expect(subject.logger).to receive(:info).with ''
@@ -59,14 +59,14 @@ describe Grape::Middleware::Logger, type: :rails_integration do
       let(:grape_endpoint) { build(:namespaced_endpoint) }
 
       it 'ignores the namespacing' do
-        expect(subject.processed_by).to eq 'TestAPI#users'
+        expect(subject.processed_by).to eq 'TestAPI/admin/users'
       end
 
       context 'with more complex route' do
         let(:grape_endpoint) { build(:namespaced_endpoint, :complex) }
 
         it 'only escapes the first slash and leaves the rest of the untouched' do
-          expect(subject.processed_by).to eq 'TestAPI#users/:name/profile'
+          expect(subject.processed_by).to eq 'TestAPI/admin/users/:name/profile'
         end
       end
     end
@@ -75,7 +75,7 @@ describe Grape::Middleware::Logger, type: :rails_integration do
       let(:grape_endpoint) { build(:grape_endpoint, :complex) }
 
       it 'only escapes the first slash and leaves the rest of the untouched' do
-        expect(subject.processed_by).to eq 'TestAPI#users/:name/profile'
+        expect(subject.processed_by).to eq 'TestAPI/users/:name/profile'
       end
     end
   end
