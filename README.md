@@ -31,14 +31,14 @@ end
 Server requests will be logged to STDOUT by default.
 
 ## Example output
-Get
+GET
 ```
 Started GET "/v1/reports/101" at 2015-12-11 15:40:51 -0800
 Processing by ReportsAPI/reports/:id
   Parameters: {"id"=>"101"}
 Completed 200 in 6.29ms
 ```
-Error
+POST
 ```
 Started POST "/v1/reports" at 2015-12-11 15:42:33 -0800
 Processing by ReportsAPI/reports
