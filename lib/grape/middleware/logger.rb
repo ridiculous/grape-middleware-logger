@@ -7,7 +7,7 @@ class Grape::Middleware::Logger < Grape::Middleware::Globals
   attr_reader :logger
 
   class << self
-    attr_accessor :logger, :filter, :on_parameters
+    attr_accessor :logger, :filter
 
     def default_logger
       default = Logger.new(STDOUT)
