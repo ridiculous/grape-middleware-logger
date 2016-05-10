@@ -63,21 +63,27 @@ by switching around some middleware. For example:
 
 ```ruby
 # config/application.rb
-config.middleware.delete 'Rails::Rack::Logger'
-config.middleware.insert_after 'ActionDispatch::RequestId', 'SelectiveLogger'
+config.middleware.swap Rails::Rack::Logger, ApiLogger
 
-# config/initializers/selective_logger.rb
-class SelectiveLogger
-  def initialize(app)
+
+# app/middleware/api_logger.rb
+class ApiLogger < Rails::Rack::Logger
+  def initialize(app, opts = {})
     @app = app
+    super
   end
 
   def call(env)
-    if env['PATH_INFO'] =~ %r{^/api}
+    if grape_request?(env)
       @app.call(env)
     else
-      Rails::Rack::Logger.new(@app).call(env)
+      super(env)
     end
+  end
+
+  private
+  def grape_request?(env)
+    env['PATH_INFO'] =~ %r{^/api}
   end
 end
 ```
