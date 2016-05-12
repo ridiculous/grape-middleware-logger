@@ -24,7 +24,7 @@ gem 'grape-middleware-logger'
 ```ruby
 class API < Grape::API
   # @note Make sure this is above you're first +mount+
-  use Grape::Middleware::Logger
+  insert_after Grape::Middleware::Formatter, Grape::Middleware::Logger
 end
 ```
 
@@ -57,7 +57,7 @@ The middleware logger can be customized with the following options:
 For example:
 
 ```ruby
-use Grape::Middleware::Logger, {
+insert_after Grape::Middleware::Formatter, Grape::Middleware::Logger, {
   logger: Logger.new(STDERR),
   filter: Class.new { def filter(opts) opts.reject { |k, _| k.to_s == 'password' } end }.new
 }
