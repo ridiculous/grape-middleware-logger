@@ -73,8 +73,7 @@ by switching around some middleware. For example:
 
 ```ruby
 # config/application.rb
-config.middleware.delete 'Rails::Rack::Logger'
-config.middleware.insert_after 'ActionDispatch::RequestId', 'SelectiveLogger'
+config.middleware.swap 'Rails::Rack::Logger', 'SelectiveLogger'
 
 # config/initializers/selective_logger.rb
 class SelectiveLogger
