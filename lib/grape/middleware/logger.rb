@@ -33,6 +33,7 @@ class Grape::Middleware::Logger < Grape::Middleware::Globals
       start_time.to_s
     ]
     logger.info %Q(Processing by #{processed_by})
+    logger.info %Q(     Headers: #{headers})
     logger.info %Q(  Parameters: #{parameters})
   end
 
@@ -78,6 +79,10 @@ class Grape::Middleware::Logger < Grape::Middleware::Globals
   def after_failure(error)
     logger.info %Q(  Error: #{error[:message]}) if error[:message]
     after(error[:status])
+  end
+
+  def headers
+    env['grape.request.headers']
   end
 
   def parameters
