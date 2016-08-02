@@ -16,7 +16,7 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ['lib']
 
-  spec.add_dependency 'grape', '>= 0.14', '< 1'
+  spec.add_dependency 'grape', '>= 0.17', '< 1'
 
   spec.add_development_dependency 'bundler', '~> 1.7'
   spec.add_development_dependency 'mime-types', '~> 2'
