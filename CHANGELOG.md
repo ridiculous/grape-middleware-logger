@@ -8,7 +8,7 @@
 ==================
 
 * Can use default rake command to run test suite
-* [#4] Fix missing JSON parameters for POST requests
+* Fix [#4](https://github.com/ridiculous/grape-middleware-logger/issues/4), missing JSON parameters from POST requests
 * Grape::Middleware::Formatter#before is Ruby 1.9.3 friendly
 
 0.15.1 (12/15/2015)
