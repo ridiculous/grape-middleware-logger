@@ -3,6 +3,7 @@
 
 * Bump Grape dependency to 0.17
 * Encourage `insert_after` when mounting have all types of request data (especially POST payloads):
+
   ```ruby    
    insert_after Grape::Middleware::Formatter, Grape::Middleware::Logger
   ```
