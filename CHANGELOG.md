@@ -2,7 +2,7 @@
 ==================
 
 * Bump Grape dependency to 0.17
-* Encourage `insert_after` when mounting to properly include query and post data.
+* Encourage `insert_after` when mounting to properly include query and post data
 
   ```ruby    
    insert_after Grape::Middleware::Formatter, Grape::Middleware::Logger
