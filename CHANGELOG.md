@@ -7,7 +7,7 @@
   ```ruby    
    insert_after Grape::Middleware::Formatter, Grape::Middleware::Logger
   ```
-  Otherwise POST requests won't work correctly. This was an earlier issue (#4) that was fixed by duck punching Grape :O
+  Otherwise POST requests won't work correctly. This was an earlier issue [(#4)](https://github.com/ridiculous/grape-middleware-logger/issues/4) that was fixed by duck punching Grape :O
 
 0.16.0 (4/4/2016)
 ==================
