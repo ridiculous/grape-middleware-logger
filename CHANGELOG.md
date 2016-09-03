@@ -2,7 +2,12 @@
 ==================
 
 * Bump Grape dependency to 0.17
-* Remove hack now that we can mount after the formatter middleware
+* Remove hack now that we can mount after the formatter middleware! However, we are now required to use `insert_after` when mounting:
+  
+  ```ruby    
+   insert_after Grape::Middleware::Formatter, Grape::Middleware::Logger
+  ```
+  Otherwise POST requests won't work correctly. This was an earlier issue (#4) that was fixed by duck punching Grape :O
 
 0.16.0 (4/4/2016)
 ==================
