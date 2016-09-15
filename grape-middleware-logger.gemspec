@@ -16,6 +16,13 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ['lib']
 
+  spec.post_install_message = %q{
+  GrapeMiddlewareLogger v1.7+ should be mounted with +insert_after+ to properly include POST request params:
+
+    insert_after Grape::Middleware::Formatter, Grape::Middleware::Logger
+
+  }
+
   spec.add_dependency 'grape', '>= 0.17', '< 1'
 
   spec.add_development_dependency 'bundler', '~> 1.7'
