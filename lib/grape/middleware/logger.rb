@@ -71,7 +71,7 @@ class Grape::Middleware::Logger < Grape::Middleware::Globals
   #
 
   def after_exception(e)
-    logger.info %Q(  Error: #{e.message})
+    logger.info %Q(  #{e.class.name}: #{e.message})
     after(500)
   end
 
