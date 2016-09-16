@@ -21,6 +21,22 @@ describe Grape::Middleware::Logger, type: :integration do
     subject.call!(env)
   end
 
+  context 'when an exception occurs' do
+    it 'logs all parts of the request including the error class' do
+      expect(subject.logger).to receive(:info).with ''
+      expect(subject.logger).to receive(:info).with %Q(Started POST "/api/1.0/users" at #{subject.start_time})
+      expect(subject.logger).to receive(:info).with %Q(Processing by TestAPI/users)
+      expect(subject.logger).to receive(:info).with %Q(  Parameters: {"id"=>"101001", "secret"=>"[FILTERED]", "customer"=>[], "name"=>"foo", "password"=>"[FILTERED]"})
+      expect(subject.logger).to receive(:info).with %Q(  ArgumentError: Whoops)
+      expect(subject.logger).to receive(:info).with /Completed 500 in \d+\.\d+ms/
+      expect(subject.logger).to receive(:info).with ''
+      expect(subject.app).to receive(:call).and_raise(ArgumentError, 'Whoops')
+      expect {
+        subject.call!(env)
+      }.to raise_error(ArgumentError)
+    end
+  end
+
   describe 'the "processing by" section' do
     before { subject.call!(env) }
 
