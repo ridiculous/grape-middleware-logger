@@ -1,3 +1,7 @@
+1.7.1 (11/1/2016)
+==================
+* Log the error class name (https://github.com/ridiculous/grape-middleware-logger/pull/13)
+
 1.7.0 (8/2/2016)
 ==================
 
