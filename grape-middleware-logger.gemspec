@@ -17,10 +17,10 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   spec.post_install_message = %q{
-  
-  GrapeMiddlewareLogger 1.7+ should be mounted with +insert_after+ to properly include POST params:
 
-    insert_after Grape::Middleware::Formatter, Grape::Middleware::Logger
+Grape::Middleware::Logger 1.7+ should be mounted with +insert_after+ to properly include POST params:
+
+  insert_after Grape::Middleware::Formatter, Grape::Middleware::Logger
 
   }
 
