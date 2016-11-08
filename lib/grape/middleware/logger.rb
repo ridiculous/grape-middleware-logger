@@ -20,20 +20,22 @@ class Grape::Middleware::Logger < Grape::Middleware::Globals
     super
     @options[:filter] ||= self.class.filter
     @logger = options[:logger] || self.class.logger || self.class.default_logger
+    @io = StringIO.new
   end
 
   def before
-    start_time
     # sets env['grape.*']
+    @io.reopen
     super
-    logger.info ''
-    logger.info %Q(Started %s "%s" at %s) % [
+    # Pass along the configured logger
+    env['grape.middleware.logger'] = @logger
+    @io.puts %Q(\nStarted %s "%s" at %s) % [
       env[Grape::Env::GRAPE_REQUEST].request_method,
       env[Grape::Env::GRAPE_REQUEST].path,
-      start_time.to_s
+      Time.now.to_s
     ]
-    logger.info %Q(Processing by #{processed_by})
-    logger.info %Q(  Parameters: #{parameters})
+    @io.puts %Q(Processing by #{processed_by})
+    @io.puts %Q(  Parameters: #{parameters})
   end
 
   # @note Error and exception handling are required for the +after+ hooks
@@ -55,15 +57,15 @@ class Grape::Middleware::Logger < Grape::Middleware::Globals
       after_failure(error)
       throw(:error, error)
     else
-      status, _, _ = *@app_response
-      after(status)
+      after
     end
     @app_response
   end
 
-  def after(status)
-    logger.info "Completed #{status} in #{((Time.now - start_time) * 1000).round(2)}ms"
-    logger.info ''
+  # Save the string to be flushed at the end of the request by Rack::Head(Override)
+  def after
+    env['grape.middleware.logger.text'] = @io.string
+    @io.close
   end
 
   #
@@ -71,13 +73,13 @@ class Grape::Middleware::Logger < Grape::Middleware::Globals
   #
 
   def after_exception(e)
-    logger.info %Q(  #{e.class.name}: #{e.message})
-    after(500)
+    @io.puts %Q(  #{e.class.name}: #{e.message})
+    after
   end
 
   def after_failure(error)
-    logger.info %Q(  Error: #{error[:message]}) if error[:message]
-    after(error[:status])
+    @io.puts %Q(  Error: #{error[:message]}) if error[:message]
+    after
   end
 
   def parameters
@@ -89,10 +91,6 @@ class Grape::Middleware::Logger < Grape::Middleware::Globals
     else
       request_params
     end
-  end
-
-  def start_time
-    @start_time ||= Time.now
   end
 
   def processed_by
@@ -109,3 +107,8 @@ class Grape::Middleware::Logger < Grape::Middleware::Globals
 end
 
 require_relative 'logger/railtie' if defined?(Rails)
+
+# This is required to properly log the status code of the response
+# The Grape::Endpoint#build_stack method builds the default stack, including the necessary middlewares for Grape to work
+# At the top of the default middleware stack is Rack::Head
+require_relative 'logger/rack_head_override' if defined?(Rack::Head)
