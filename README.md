@@ -52,6 +52,7 @@ Completed 422 in 6.29ms
 The middleware logger can be customized with the following options:
 
 * The `:logger` option can be any object that responds to `.info(String)`
+* The `:one_line` option configures the log output to be on one line instead of multiple.  It accepts `true` or `false`.   The default configuration is `false`
 * The `:filter` option can be any object that responds to `.filter(Hash)` and returns a hash.
 * The `:headers` option can be either `:all` or array of strings.
     + If `:all`, all request headers will be output.
@@ -62,17 +63,19 @@ For example:
 ```ruby
 insert_after Grape::Middleware::Formatter, Grape::Middleware::Logger, {
   logger: Logger.new(STDERR),
+  one_line: true,
   filter: Class.new { def filter(opts) opts.reject { |k, _| k.to_s == 'password' } end }.new,
   headers: %w(version cache-control)
+  filter: Class.new { def filter(opts) opts.reject { |k, _| k.to_s == 'password' } end }.new
 }
 ```
 
 ## Using Rails?
-`Rails.logger` and `Rails.application.config.filter_parameters` will be used automatically as the default logger and 
+`Rails.logger` and `Rails.application.config.filter_parameters` will be used automatically as the default logger and
 param filterer, respectively. This behavior can be overridden by passing the `:logger` or
 `:filter` option when mounting.
 
-You may want to disable Rails logging for API endpoints, so that the logging doesn't double-up. You can achieve this 
+You may want to disable Rails logging for API endpoints, so that the logging doesn't double-up. You can achieve this
 by switching around some middleware. For example:
 
 ```ruby

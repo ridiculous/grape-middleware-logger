@@ -7,7 +7,7 @@ class Grape::Middleware::Logger < Grape::Middleware::Globals
   attr_reader :logger
 
   class << self
-    attr_accessor :logger, :filter, :headers
+    attr_accessor :logger, :filter, :one_line, :headers
 
     def default_logger
       default = Logger.new(STDOUT)
@@ -20,6 +20,7 @@ class Grape::Middleware::Logger < Grape::Middleware::Globals
     super
     @options[:filter] ||= self.class.filter
     @options[:headers] ||= self.class.headers
+    @options[:one_line] ||= false
     @logger = options[:logger] || self.class.logger || self.class.default_logger
   end
 
@@ -27,15 +28,19 @@ class Grape::Middleware::Logger < Grape::Middleware::Globals
     start_time
     # sets env['grape.*']
     super
-    logger.info ''
-    logger.info %Q(Started %s "%s" at %s) % [
-      env[Grape::Env::GRAPE_REQUEST].request_method,
-      env[Grape::Env::GRAPE_REQUEST].path,
-      start_time.to_s
-    ]
-    logger.info %Q(Processing by #{processed_by})
-    logger.info %Q(  Parameters: #{parameters})
-    logger.info %Q(  Headers: #{headers}) if @options[:headers]
+    if @options[:one_line]
+      logger.info %Q(Started #{env[Grape::Env::GRAPE_REQUEST].request_method} "#{env[Grape::Env::GRAPE_REQUEST].path}" at #{start_time.to_s} - Processing by #{processed_by} - Parameters: #{parameters})
+    else
+      logger.info ''
+      logger.info %Q(Started %s "%s" at %s) % [
+        env[Grape::Env::GRAPE_REQUEST].request_method,
+        env[Grape::Env::GRAPE_REQUEST].path,
+        start_time.to_s
+      ]
+      logger.info %Q(Processing by #{processed_by})
+      logger.info %Q(  Parameters: #{parameters})
+      logger.info %Q(  Headers: #{headers}) if @options[:headers]
+    end
   end
 
   # @note Error and exception handling are required for the +after+ hooks
@@ -65,7 +70,7 @@ class Grape::Middleware::Logger < Grape::Middleware::Globals
 
   def after(status)
     logger.info "Completed #{status} in #{((Time.now - start_time) * 1000).round(2)}ms"
-    logger.info ''
+    logger.info '' unless @options[:one_line]
   end
 
   #
