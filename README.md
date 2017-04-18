@@ -53,13 +53,17 @@ The middleware logger can be customized with the following options:
 
 * The `:logger` option can be any object that responds to `.info(String)`
 * The `:filter` option can be any object that responds to `.filter(Hash)` and returns a hash.
+* The `:headers` option can be eather `:all` or array of strings.
+    + If `:all`, all request headers will be output.
+    + If array, output will be filtered by names in the array. (case-insensitive)
 
 For example:
 
 ```ruby
 insert_after Grape::Middleware::Formatter, Grape::Middleware::Logger, {
   logger: Logger.new(STDERR),
-  filter: Class.new { def filter(opts) opts.reject { |k, _| k.to_s == 'password' } end }.new
+  filter: Class.new { def filter(opts) opts.reject { |k, _| k.to_s == 'password' } end }.new,
+  headers: %w(version cache-control)
 }
 ```
 

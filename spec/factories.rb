@@ -32,8 +32,10 @@ FactoryGirl.define do
     grape_request { build :grape_request }
     grape_endpoint { build(:grape_endpoint) }
     params { grape_request.params }
+    headers { grape_request.headers }
     post_params { { 'secret' => 'key', 'customer' => [] } }
     rails_post_params { { 'name' => 'foo', 'password' => 'access' } }
+    other_env_params { {} }
 
     initialize_with do
       new.merge(
@@ -42,10 +44,19 @@ FactoryGirl.define do
         'action_dispatch.request.request_parameters' => rails_post_params,
         Grape::Env::GRAPE_REQUEST => grape_request,
         Grape::Env::GRAPE_REQUEST_PARAMS => params,
+        Grape::Env::GRAPE_REQUEST_HEADERS => headers,
         Grape::Env::RACK_REQUEST_FORM_HASH => post_params,
         Grape::Env::API_ENDPOINT => grape_endpoint
-      )
+      ).merge(other_env_params)
     end
+
+    trait :prefixed_basic_headers do
+      other_env_params { {
+        'HTTP_CACHE_CONTROL' => 'max-age=0',
+        'HTTP_USER_AGENT' => 'Mozilla/5.0'
+      } }
+    end
+
   end
 
   factory :grape_endpoint, class: Grape::Endpoint do
@@ -84,9 +95,18 @@ FactoryGirl.define do
   end
 
   factory :grape_request, class: OpenStruct do
+    headers { {} }
+
     initialize_with {
-      new(request_method: 'POST', path: '/api/1.0/users', headers: {}, params: { 'id' => '101001' })
+      new(request_method: 'POST', path: '/api/1.0/users', headers: headers, params: { 'id' => '101001' })
     }
+
+    trait :basic_headers do
+      headers { {
+        'Cache-Control' => 'max-age=0',
+        'User-Agent' => 'Mozilla/5.0'
+      } }
+    end
   end
 
   factory :app do
