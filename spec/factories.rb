@@ -52,8 +52,10 @@ FactoryGirl.define do
 
     trait :prefixed_basic_headers do
       other_env_params { {
+        'HTTP_VERSION' => 'HTTP/1.1',
         'HTTP_CACHE_CONTROL' => 'max-age=0',
-        'HTTP_USER_AGENT' => 'Mozilla/5.0'
+        'HTTP_USER_AGENT' => 'Mozilla/5.0',
+        'HTTP_ACCEPT_LANGUAGE' => 'en-US'
       } }
     end
 
@@ -103,8 +105,10 @@ FactoryGirl.define do
 
     trait :basic_headers do
       headers { {
+        'Version' => 'HTTP/1.1',
         'Cache-Control' => 'max-age=0',
-        'User-Agent' => 'Mozilla/5.0'
+        'User-Agent' => 'Mozilla/5.0',
+        'Accept-Language' => 'en-US'
       } }
     end
   end

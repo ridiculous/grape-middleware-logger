@@ -53,7 +53,7 @@ The middleware logger can be customized with the following options:
 
 * The `:logger` option can be any object that responds to `.info(String)`
 * The `:filter` option can be any object that responds to `.filter(Hash)` and returns a hash.
-* The `:headers` option can be eather `:all` or array of strings.
+* The `:headers` option can be either `:all` or array of strings.
     + If `:all`, all request headers will be output.
     + If array, output will be filtered by names in the array. (case-insensitive)
 

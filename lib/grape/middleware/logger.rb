@@ -95,14 +95,14 @@ class Grape::Middleware::Logger < Grape::Middleware::Globals
 
   def headers
     request_headers = env[Grape::Env::GRAPE_REQUEST_HEADERS].to_hash
-    return request_headers if @options[:headers] == :all
+    return Hash[request_headers.sort] if @options[:headers] == :all
 
     headers_needed = Array(@options[:headers])
-    Hash[request_headers.sort].select do |key, value|
-      headers_needed.any? do |need|
-        need.to_s.casecmp(key).zero?
-      end
+    result = {}
+    headers_needed.each do |need|
+      result.merge!(request_headers.select { |key, value| need.to_s.casecmp(key).zero? })
     end
+    Hash[result.sort]
   end
 
   def start_time

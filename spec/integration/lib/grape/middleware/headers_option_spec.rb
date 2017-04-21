@@ -10,16 +10,16 @@ describe Grape::Middleware::Logger, type: :integration do
 
   context ':all option is set to option headers' do
     let(:options) { {
-        filter: build(:param_filter),
-        headers: :all,
-        logger: Logger.new(Tempfile.new('logger'))
+      filter: build(:param_filter),
+      headers: :all,
+      logger: Logger.new(Tempfile.new('logger'))
     } }
     it 'all headers will be shown, headers will be sorted by name' do
       expect(subject.logger).to receive(:info).with ''
       expect(subject.logger).to receive(:info).with %Q(Started POST "/api/1.0/users" at #{subject.start_time})
       expect(subject.logger).to receive(:info).with %Q(Processing by TestAPI/users)
       expect(subject.logger).to receive(:info).with %Q(  Parameters: {"id"=>"101001", "secret"=>"[FILTERED]", "customer"=>[], "name"=>"foo", "password"=>"[FILTERED]"})
-      expect(subject.logger).to receive(:info).with %Q(  Headers: {"Cache-Control"=>"max-age=0", "User-Agent"=>"Mozilla/5.0"})
+      expect(subject.logger).to receive(:info).with %Q(  Headers: {"Accept-Language"=>"en-US", "Cache-Control"=>"max-age=0", "User-Agent"=>"Mozilla/5.0", "Version"=>"HTTP/1.1"})
       expect(subject.logger).to receive(:info).with /Completed 200 in \d+.\d+ms/
       expect(subject.logger).to receive(:info).with ''
       subject.call!(env)
@@ -28,9 +28,9 @@ describe Grape::Middleware::Logger, type: :integration do
 
   context 'list of names ["User-Agent", "Cache-Control"] is set to option headers' do
     let(:options) { {
-        filter: build(:param_filter),
-        headers: %w(User-Agent Cache-Control),
-        logger: Logger.new(Tempfile.new('logger'))
+      filter: build(:param_filter),
+      headers: %w(User-Agent Cache-Control),
+      logger: Logger.new(Tempfile.new('logger'))
     } }
     it 'two headers will be shown' do
       expect(subject.logger).to receive(:info).with ''
@@ -46,9 +46,9 @@ describe Grape::Middleware::Logger, type: :integration do
 
   context 'a single string "Cache-Control" is set to option headers' do
     let(:options) { {
-        filter: build(:param_filter),
-        headers: 'Cache-Control',
-        logger: Logger.new(Tempfile.new('logger'))
+      filter: build(:param_filter),
+      headers: 'Cache-Control',
+      logger: Logger.new(Tempfile.new('logger'))
     } }
     it 'only Cache-Control header will be shown' do
       expect(subject.logger).to receive(:info).with ''

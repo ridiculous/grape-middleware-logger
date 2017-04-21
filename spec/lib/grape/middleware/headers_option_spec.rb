@@ -6,16 +6,18 @@ describe Grape::Middleware::Logger do
   subject { described_class.new(app, options) }
 
   describe '#headers' do
-  	let(:grape_request) { build :grape_request, :basic_headers }
-  	let(:env) { build :expected_env, grape_request: grape_request }
-    
+    let(:grape_request) { build :grape_request, :basic_headers }
+    let(:env) { build :expected_env, grape_request: grape_request }
+
     before { subject.instance_variable_set(:@env, env) }
 
     context 'when @options[:headers] has a symbol :all' do
       let(:options) { { headers: :all, logger: Object.new } }
       it 'all request headers should be retrieved' do
+        expect(subject.headers.fetch('Accept-Language')).to eq('en-US')
         expect(subject.headers.fetch('Cache-Control')).to eq('max-age=0')
         expect(subject.headers.fetch('User-Agent')).to eq('Mozilla/5.0')
+        expect(subject.headers.fetch('Version')).to eq('HTTP/1.1')
       end
     end
 
@@ -40,7 +42,7 @@ describe Grape::Middleware::Logger do
   end
 
   describe '#headers if no request header' do
-  	let(:env) { build :expected_env }
+    let(:env) { build :expected_env }
     before { subject.instance_variable_set(:@env, env) }
 
     context 'when @options[:headers] is set, but no request header is there' do
