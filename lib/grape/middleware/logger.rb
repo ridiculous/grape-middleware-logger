@@ -7,7 +7,7 @@ class Grape::Middleware::Logger < Grape::Middleware::Globals
   attr_reader :logger
 
   class << self
-    attr_accessor :logger, :filter
+    attr_accessor :logger, :filter, :headers
 
     def default_logger
       default = Logger.new(STDOUT)
@@ -19,6 +19,7 @@ class Grape::Middleware::Logger < Grape::Middleware::Globals
   def initialize(_, options = {})
     super
     @options[:filter] ||= self.class.filter
+    @options[:headers] ||= self.class.headers
     @logger = options[:logger] || self.class.logger || self.class.default_logger
   end
 
@@ -34,6 +35,7 @@ class Grape::Middleware::Logger < Grape::Middleware::Globals
     ]
     logger.info %Q(Processing by #{processed_by})
     logger.info %Q(  Parameters: #{parameters})
+    logger.info %Q(  Headers: #{headers}) if @options[:headers]
   end
 
   # @note Error and exception handling are required for the +after+ hooks
@@ -89,6 +91,18 @@ class Grape::Middleware::Logger < Grape::Middleware::Globals
     else
       request_params
     end
+  end
+
+  def headers
+    request_headers = env[Grape::Env::GRAPE_REQUEST_HEADERS].to_hash
+    return Hash[request_headers.sort] if @options[:headers] == :all
+
+    headers_needed = Array(@options[:headers])
+    result = {}
+    headers_needed.each do |need|
+      result.merge!(request_headers.select { |key, value| need.to_s.casecmp(key).zero? })
+    end
+    Hash[result.sort]
   end
 
   def start_time
