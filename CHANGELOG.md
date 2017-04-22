@@ -1,3 +1,7 @@
+1.8.0 (4/22/2017)
+==================
+* [#17] Add a `:headers` option, which can be either `:all` or an array of strings. (Thanks [@yamamotok](https://github.com/yamamotok))
+
 1.7.1 (11/1/2016)
 ==================
 * Log the error class name (https://github.com/ridiculous/grape-middleware-logger/pull/13)
