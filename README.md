@@ -20,6 +20,12 @@ gem 'grape', '>= 0.17'
 gem 'grape-middleware-logger'
 ```
 
+Then, require the gem somewhere in your app such as `config.ru` (if using Rack), or simply at the top of your api file:
+
+```ruby
+require 'grape/middleware/logger'
+```
+
 ## Usage
 ```ruby
 class API < Grape::API
