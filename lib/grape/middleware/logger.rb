@@ -7,7 +7,7 @@ class Grape::Middleware::Logger < Grape::Middleware::Globals
   attr_reader :logger
 
   class << self
-    attr_accessor :logger, :filter, :one_line, :headers
+    attr_accessor :logger, :filter, :headers, :condensed
 
     def default_logger
       default = Logger.new(STDOUT)
@@ -20,7 +20,7 @@ class Grape::Middleware::Logger < Grape::Middleware::Globals
     super
     @options[:filter] ||= self.class.filter
     @options[:headers] ||= self.class.headers
-    @options[:one_line] ||= false
+    @options[:condensed] ||= false
     @logger = options[:logger] || self.class.logger || self.class.default_logger
   end
 
@@ -28,19 +28,19 @@ class Grape::Middleware::Logger < Grape::Middleware::Globals
     start_time
     # sets env['grape.*']
     super
-    if @options[:one_line]
-      logger.info %Q(Started #{env[Grape::Env::GRAPE_REQUEST].request_method} "#{env[Grape::Env::GRAPE_REQUEST].path}" at #{start_time.to_s} - Processing by #{processed_by} - Parameters: #{parameters})
-    else
-      logger.info ''
-      logger.info %Q(Started %s "%s" at %s) % [
+
+    log_statements = [
+      '',
+      %Q(Started %s "%s" at %s) % [
         env[Grape::Env::GRAPE_REQUEST].request_method,
         env[Grape::Env::GRAPE_REQUEST].path,
         start_time.to_s
-      ]
-      logger.info %Q(Processing by #{processed_by})
-      logger.info %Q(  Parameters: #{parameters})
-      logger.info %Q(  Headers: #{headers}) if @options[:headers]
-    end
+      ],
+      %Q(Processing by #{processed_by}),
+      %Q(  Parameters: #{parameters})]
+
+    log_statements.append(%Q(  Headers: #{headers})) if @options[:headers]
+    log_info(log_statements)
   end
 
   # @note Error and exception handling are required for the +after+ hooks
@@ -69,8 +69,12 @@ class Grape::Middleware::Logger < Grape::Middleware::Globals
   end
 
   def after(status)
-    logger.info "Completed #{status} in #{((Time.now - start_time) * 1000).round(2)}ms"
-    logger.info '' unless @options[:one_line]
+    log_info(
+      [
+        "Completed #{status} in #{((Time.now - start_time) * 1000).round(2)}ms",
+        ''
+      ]
+    )
   end
 
   #
@@ -124,6 +128,14 @@ class Grape::Middleware::Logger < Grape::Middleware::Globals
     end
     result.concat endpoint.options[:path].map { |path| path.to_s.sub(BACKSLASH, '') }
     endpoint.options[:for].to_s << result.join(BACKSLASH)
+  end
+
+  def log_info(log_statements=[])
+    if @options[:condensed]
+      logger.info log_statements.compact.delete_if(&:empty?).each(&:strip!).join(" - ")
+    else
+      log_statements.each { |log_statement| logger.info log_statement }
+    end
   end
 end
 
