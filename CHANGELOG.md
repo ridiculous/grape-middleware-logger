@@ -1,3 +1,7 @@
+1.9.0 (7/7/2017)
+==================
+* [#19] Support Grape 1.0.0 (Thanks [@badlamer](https://github.com/badlamer))
+
 1.8.0 (4/22/2017)
 ==================
 * [#17] Add a `:headers` option, which can be either `:all` or an array of strings. (Thanks [@yamamotok](https://github.com/yamamotok))
