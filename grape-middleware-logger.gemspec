@@ -24,7 +24,7 @@ Grape::Middleware::Logger 1.7+ should be mounted with +insert_after+ to properly
 
   }
 
-  spec.add_dependency 'grape', '>= 0.17', '< 1.1'
+  spec.add_dependency 'grape', '>= 0.17', '<= 1.1'
 
   spec.add_development_dependency 'bundler', '~> 1.7'
   spec.add_development_dependency 'mime-types', '~> 2'
