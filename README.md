@@ -22,6 +22,9 @@ gem 'grape-middleware-logger'
 
 ## Usage
 ```ruby
+require 'grape'
+require 'grape/middleware/logger'
+
 class API < Grape::API
   # @note Make sure this is above your first +mount+
   insert_after Grape::Middleware::Formatter, Grape::Middleware::Logger
