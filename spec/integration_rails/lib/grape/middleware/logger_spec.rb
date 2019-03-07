@@ -42,14 +42,27 @@ describe Grape::Middleware::Logger, type: :rails_integration do
     end
   end
 
-  it 'logs all parts of the request' do
-    expect(subject.logger).to receive(:info).with ''
-    expect(subject.logger).to receive(:info).with %Q(Started POST "/api/1.0/users" at #{subject.start_time})
-    expect(subject.logger).to receive(:info).with %Q(Processing by TestAPI/users)
-    expect(subject.logger).to receive(:info).with %Q(  Parameters: {"id"=>"101001", "secret"=>"key", "customer"=>[], "name"=>"foo", "password"=>"[FILTERED]"})
-    expect(subject.logger).to receive(:info).with /Completed 200 in \d+.\d+ms/
-    expect(subject.logger).to receive(:info).with ''
-    subject.call!(env)
+  context 'when the option[:condensed] is false' do
+    let(:options) { { condensed: false } }
+
+    it 'logs all parts of the request on multiple lines' do
+      expect(subject.logger).to receive(:info).with ''
+      expect(subject.logger).to receive(:info).with %Q(Started POST "/api/1.0/users" at #{subject.start_time})
+      expect(subject.logger).to receive(:info).with %Q(Processing by TestAPI/users)
+      expect(subject.logger).to receive(:info).with %Q(  Parameters: {"id"=>"101001", "secret"=>"key", "customer"=>[], "name"=>"foo", "password"=>"[FILTERED]"})
+      expect(subject.logger).to receive(:info).with /Completed 200 in \d+.\d+ms/
+      expect(subject.logger).to receive(:info).with ''
+      subject.call!(env)
+    end
+  end
+
+  context 'when the option[:condensed] is true' do
+    let(:options) { { condensed: true } }
+    it 'logs all parts of the request on one line' do
+      expect(subject.logger).to receive(:info).with %Q(Started POST "/api/1.0/users" at #{subject.start_time} - Processing by TestAPI/users - Parameters: {"id"=>"101001", "secret"=>"key", "customer"=>[], "name"=>"foo", "password"=>"[FILTERED]"})
+      expect(subject.logger).to receive(:info).with /Completed 200 in \d+.\d+ms/
+      subject.call!(env)
+    end
   end
 
   describe 'the "processing by" section' do
