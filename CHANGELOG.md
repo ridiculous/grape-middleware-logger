@@ -1,3 +1,7 @@
+1.12.0 (5/13/2019)
+==================
+* [#25] Support Rails 6.0.0 (Thanks [@serggl](https://github.com/serggl))
+
 1.9.0 (7/7/2017)
 ==================
 * [#19] Support Grape 1.0.0 (Thanks [@badlamer](https://github.com/badlamer))
