@@ -45,7 +45,7 @@ FactoryGirl.define do
         Grape::Env::GRAPE_REQUEST => grape_request,
         Grape::Env::GRAPE_REQUEST_PARAMS => params,
         Grape::Env::GRAPE_REQUEST_HEADERS => headers,
-        Grape::Env::RACK_REQUEST_FORM_HASH => post_params,
+        Rack::RACK_REQUEST_FORM_HASH => post_params,
         Grape::Env::API_ENDPOINT => grape_endpoint
       ).merge(other_env_params)
     end

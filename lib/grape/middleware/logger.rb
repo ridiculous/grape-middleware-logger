@@ -93,7 +93,7 @@ class Grape::Middleware::Logger < Grape::Middleware::Globals
 
   def parameters
     request_params = env[Grape::Env::GRAPE_REQUEST_PARAMS].to_hash
-    request_params.merge! env[Grape::Env::RACK_REQUEST_FORM_HASH] if env[Grape::Env::RACK_REQUEST_FORM_HASH]
+    request_params.merge! env[Rack::RACK_REQUEST_FORM_HASH] if env[Rack::RACK_REQUEST_FORM_HASH]
     request_params.merge! env['action_dispatch.request.request_parameters'] if env['action_dispatch.request.request_parameters']
     if @options[:filter]
       @options[:filter].filter(request_params)
